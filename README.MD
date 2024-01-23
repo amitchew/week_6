@@ -22,6 +22,10 @@ This repository contains the code for both the frontend/rag_chatbot and backend 
 
 To get started with this project, clone the repository using the following command:
 
+1. **Clone Repo:**
+
+```bash
+git clone https://github.com/amitchew/week_6
 
 
 
