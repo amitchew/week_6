@@ -26,8 +26,7 @@ To get started with this project, clone the repository using the following comma
 
 ```bash
 git clone https://github.com/amitchew/week_6
-
-
+```
 
 2. **Project Setup:**
 
