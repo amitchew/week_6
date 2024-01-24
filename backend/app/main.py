@@ -1,60 +1,29 @@
-from fastapi import FastAPI, HTTPException, Form
+# main.py
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import List
-import openai  # Install using: pip install openai
-import os
+from main_router import main_router
+from chat_router import chat_router
+import uvicorn
 
-from dotenv import load_dotenv
-load_dotenv()
-app = FastAPI()
+def create_app():
+    app = FastAPI()
 
-# Allow CORS for all domains in this example.
-origins = ["*"]
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+    origins = ["*"]
+    # Enable CORS
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=origins,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
-# OpenAI API key
-openai.api_key = openai.api_key = os.getenv("OPENAI_API_KEY")
+    app.include_router(main_router, prefix="/", tags=["main"])
+    app.include_router(chat_router, prefix="/chat", tags=["chat"])
 
-@main_app.get('/')
-def home():
-    return 'THis is 10 Academy promptly API '
+    return app
 
-class ChatRequest(BaseModel):
-    input: str
-
-class ChatResponse(BaseModel):
-    response: str
-
-@app.post("/chat")
-async def chat(request: ChatRequest):
-    try:
-        # Format user input and previous messages for OpenAI
-        user_input = request.input
-        langchain_messages = [{"role": "system", "content": "You are a helpful assistant."},
-                              {"role": "user", "content": user_input}]
-
-        # Fetch response from OpenAI GPT-3.5-turbo
-        openai_response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=langchain_messages
-        )
-
-        # Extract the assistant's response from the OpenAI API response
-        assistant_response = openai_response["choices"][0]["message"]["content"]
-
-        return {"response": assistant_response}
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+app = create_app()
 
 if __name__ == "__main__":
-    import uvicorn
-
     uvicorn.run(app, host="0.0.0.0", port=8000)

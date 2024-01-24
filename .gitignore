@@ -1,3 +1,4 @@
 # .gitignore
 week_6/
 .env
+FrontEnd/rag_chatbot/node_modules/

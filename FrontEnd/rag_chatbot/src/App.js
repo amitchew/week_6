@@ -11,6 +11,9 @@ export default function App() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [history, setHistory] = useState([]);
+  const [accuracy, setAccuracy] = useState([]);
+  const [Classification, setClassification] = useState([]);
+
 
   const handleSubmit = async () => {
     const prompt = {
@@ -20,7 +23,7 @@ export default function App() {
 
     setMessages([...messages, prompt]);
 
-    await fetch("https://api.openai.com/v1/chat/completions", {
+    await fetch("https://localhost:3001/chat/", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
@@ -42,6 +45,12 @@ export default function App() {
             content: res
           }
         ]);
+        setAccuracy((accuracy) => [
+          accuracy = data.choices[0]?.message?.accuracy || " ",
+        ]);
+        setClassification((classification) => [
+          classification = data.choices[0]?.message?.classification || " ",
+        ]);
         setHistory((history) => [...history, { question: input, answer: res }]);
         setInput("");
       });
@@ -50,6 +59,8 @@ export default function App() {
   const clear = () => {
     setMessages([]);
     setHistory([]);
+    setAccuracy([]);
+    setClassification([]);
   };
 
   return (
@@ -69,9 +80,9 @@ export default function App() {
       </div>
       <div className="Column">
         {/* <h3 className="Title">History</h3> */}
-        <h6 className="Title">Accuracy </h6>
+        <h6 className="Title">Accuracy {accuracy} %</h6>
 
-        <h6 className="Title">Classification</h6>
+        <h6 className="Title">Classification {Classification} </h6>
 
 
 
